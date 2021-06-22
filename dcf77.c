@@ -616,7 +616,7 @@ int main(void)
     ADCSRA |= (1<<ADSC);              // Start the first conversion
     ADCSRA |= (1<<ADSC);              // Start the first conversion
     
-     //Timer 2 as counter for 1 millisecond fclock = 8MHz
+    //Timer 2 as counter for 1 millisecond fclock = 8MHz
     OCR2 = 62;
     TCCR2 |= (1 << WGM21); // Set to CTC Mode
     TIMSK |= (1 << OCIE2); //Set interrupt on compare match
@@ -653,76 +653,76 @@ int main(void)
 	    }
 	    ms1 = ms;
 	    
-	    if((ms1 - ms0) > 1200) //Pause longer that 1 second? YES: New minute starts
+	    if((ms1 - ms0) > 1200) //Pause longer than 1.2 seconds? YES: New minute starts
 	    {
 			bc = 0;
 						
 			//Parity check  date
 			if(get_parity(b, 36, 57) != get_bits(b, 58, 58))
 			{
-				oled_putstring(0, 2, "--------", 0, 0);
+				oled_putstring(0, 2, "-------", 1, 0);
 			}
 			else
 			{
 			    //Day
-			    oled_putnumber(0, 2, get_bits(b, 40, 41), -1, 0, 0);
-			    oled_putnumber(1, 2, get_bits(b, 36, 39), -1, 0, 0);
-			    oled_putchar1(2 * 6, 2, '.', 0); 
+			    oled_putnumber(0, 2, get_bits(b, 40, 41), -1, 1, 0);
+			    oled_putnumber(2, 2, get_bits(b, 36, 39), -1, 1, 0);
+			    oled_putchar2(4 * 6, 2, '.', 0); 
 			
 			    //Month
-			    oled_putnumber(3, 2, get_bits(b, 49, 49), -1, 0, 0);
-			    oled_putnumber(4, 2, get_bits(b, 45, 48), -1, 0, 0);
-			    oled_putchar1(5 * 6, 2, '.', 0); 
+			    oled_putnumber(5, 2, get_bits(b, 49, 49), -1, 1, 0);
+			    oled_putnumber(7, 2, get_bits(b, 45, 48), -1, 1, 0);
+			    oled_putchar2(9 * 6, 2, '.', 0); 
 			
 			    //Year
-			    oled_putnumber(6, 2, get_bits(b, 54, 57), -1, 0, 0);
-			    oled_putnumber(7, 2, get_bits(b, 50, 53), -1, 0, 0);
+			    oled_putnumber(10, 2, get_bits(b, 54, 57), -1, 1, 0);
+			    oled_putnumber(12, 2, get_bits(b, 50, 53), -1, 1, 0);
 			}    
 					
 			//Day of week			
 			if((get_bits(b, 42, 44) >= 0) && (get_bits(b, 42, 44) <= 6))
 			{
-			    oled_putstring(12, 2, weekday[get_bits(b, 42, 44) - 1], 0, 0); 
+			    oled_putstring(15, 3, weekday[get_bits(b, 42, 44) - 1], 0, 0); 
 			}
 			else
 			{
-				oled_putstring(12, 2, "----", 0, 0);     
+				oled_putstring(12, 3, "---", 0, 0);     
 			}	
 			
 			//parity check hour
 			if(get_parity(b, 29, 34) != get_bits(b, 35, 35))
 			{
-				oled_putstring(0, 4, "--", 0, 0);
+				oled_putstring(0, 5, "--", 1, 0);
 			}
 			else
 			{
 			    //Hour
-			    oled_putnumber(0, 4, get_bits(b, 33, 34), -1, 0, 0);
-			    oled_putnumber(1, 4, get_bits(b, 29, 32), -1, 0, 0);
-			    oled_putchar1(2 * 6, 4, ':', 0); 
+			    oled_putnumber(0, 5, get_bits(b, 33, 34), -1, 1, 0);
+			    oled_putnumber(2, 5, get_bits(b, 29, 32), -1, 1, 0);
+			    oled_putchar2(4 * 6, 5, ':', 0); 
 			}
 			
 			//parity check minute
 			if(get_parity(b, 21, 27) != get_bits(b, 28, 28))
 			{
-				oled_putstring(3, 4, "--", 0, 0);
+				oled_putstring(5, 5, "--", 1, 0);
 			}
 			else
 			{
 				//Minute
-			    oled_putnumber(3, 4, get_bits(b, 25, 27), -1, 0, 0);
-			    oled_putnumber(4, 4, get_bits(b, 21, 24), -1, 0, 0);
+			    oled_putnumber(5, 5, get_bits(b, 25, 27), -1, 1, 0);
+			    oled_putnumber(7, 5, get_bits(b, 21, 24), -1, 1, 0);
 			}    
 			
 			//MEZ or MESZ?
 			if(!b[17] && b[18])
 			{
-				oled_putstring(12, 4, "MEZ ", 0, 0);
+				oled_putstring(15, 6, "MEZ ", 0, 0);
 			}
 			
 			if(b[17] && !b[18])
 			{
-				oled_putstring(12, 4, "MESZ", 0, 0);
+				oled_putstring(15, 6, "MESZ", 0, 0);
 			}		
 		}
 		
