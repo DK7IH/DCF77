@@ -599,6 +599,7 @@ int main(void)
 	int b[60];
 	int bc = 0;
 	int t1;
+	int secs = 0;
 	char weekday[7][4] = {"MON", "TUE", "WEN", "THU", "FRI", "SAT", "SUN"};
 		
 	//OUTPUT
@@ -656,6 +657,10 @@ int main(void)
 	    if((ms1 - ms0) > 1200) //Pause longer than 1.2 seconds? YES: New minute starts
 	    {
 			bc = 0;
+			secs = 0;
+			
+			oled_cls(0);			
+			oled_putstring(0, 0, " DK7IH DCF77 CLOCK ", 0, 1);
 						
 			//Parity check  date
 			if(get_parity(b, 36, 57) != get_bits(b, 58, 58))
@@ -714,6 +719,8 @@ int main(void)
 			    oled_putnumber(7, 5, get_bits(b, 21, 24), -1, 1, 0);
 			}    
 			
+			oled_putchar2(9 * 6, 5, ':', 0); 
+						
 			//MEZ or MESZ?
 			if(!b[17] && b[18])
 			{
@@ -735,7 +742,15 @@ int main(void)
 	    }   
 	    ms1 = ms; 
 	    PORTD |= (1 << PD0);
-
+                
+        //Seconds
+        secs++;
+		if((secs >= 0) && (secs < 60))
+		{
+		    oled_putnumber(10, 5, secs / 10, -1, 1, 0);
+		    oled_putnumber(12, 5, secs - (secs / 10) * 10, -1, 1, 0);
+		}    
+		        
         //Is bit 0 or 1?
 	    if((ms1 - ms0) > 120)
 	    {
@@ -745,7 +760,7 @@ int main(void)
 		{
 			b[bc] = 0;
 		}
-		
+				
 		//Bitcounter still in range?
 		if(bc < 60)
 		{
